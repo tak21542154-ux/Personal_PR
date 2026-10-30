@@ -1,0 +1,9 @@
+_shots/
+_s/
+node_modules/
+*.log
+_confirmed.json
+_missing.json
+tools/.private-terms.json
+.omp/
+_t_*.html
