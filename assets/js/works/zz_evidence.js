@@ -9,7 +9,7 @@ window.SITE.evidenceKinds = [
   { k: "demo", t: "화면", d: "실제 화면 또는 격리한 데모 데이터 화면입니다. 항목 하단 '단계별 화면'에서 볼 수 있습니다." },
   { k: "src", t: "원문 공개", d: "이 저장소의 evidence 폴더에서 파일 원문을 읽을 수 있습니다." },
   { k: "open", t: "열람·시연", d: "비공개 저장소·로컬 폴더에 있습니다. 요청하시면 화면 공유 시연 또는 읽기 전용 열람으로 보여드립니다." },
-  { k: "doc", t: "문서 근거", d: "보관 중인 문서·산출물입니다. 요청하시면 원본을 보여드립니다." }
+  { k: "doc", t: "문서 근거", d: "보관 중인 문서·산출물입니다. 요청하시면 보여드리고, 상대 이름이나 수치가 든 문서는 구성과 이력 중심으로 보여드립니다." }
 ];
 
 (function () {
@@ -20,6 +20,7 @@ window.SITE.evidenceKinds = [
 
   var FINQ = ["핀큐AI 저장소(비공개)", "2026-10-22 단독 저장소로 분리 · 이후 커밋 241건 · 2026-10-22 ~ 2026-10-28 · 최신 06bb210"];
   var MONO = ["분리 전 이력(비공개 모노레포)", "커밋 874건 · 2026-03-15 ~ 2026-08-23 · 최신 9d2d663"];
+  var PROPOSAL = ["확인 방법", "파일 제목·버전 이력·수정일과 슬라이드 구성은 화면 공유로 보여드립니다. 상대 이름이나 수치가 든 본문은 보여드리지 않습니다."];
 
   /* 핀큐AI 계열 */
   e("finqai", ["live", "open"], [["공개 홈페이지", "랜딩 페이지가 공개 주소로 운영 중입니다(응답 확인 2026-11-02)."], FINQ, MONO]);
@@ -32,7 +33,7 @@ window.SITE.evidenceKinds = [
   e("bokguon", ["open"], [["저장소(비공개)", "커밋 15건 · 2026-10-12 ~ 2026-10-28 · 최신 5b3ed4c"], ["화면 출처", "관리자·보험사 화면은 격리한 DB의 데모 데이터입니다."]]);
   e("mobility-erp", ["open"], [["저장소(비공개)", "커밋 197건 · 2026-03-12 ~ 2026-10-27 · 최신 9e7c810"], ["화면 출처", "차량 현황·관제·스케줄 화면은 격리한 DB의 데모 데이터이고, 회사명은 가렸습니다."]]);
   e("grid-dispatch", ["doc"], [["근거", "기사용 화면 와이어프레임과 사고 접수부터 정산까지의 흐름 문서가 보관돼 있습니다."]]);
-  e("strategy-office-docs", ["doc"]);
+  e("strategy-office-docs", ["doc"], [PROPOSAL]);
   e("academy-inventory", ["doc"]);
 
   /* 영업·마케팅 / 커머스 */
@@ -72,6 +73,15 @@ window.SITE.evidenceKinds = [
   e("obsidian-vault", ["open"]);
   e("parkcare", ["open"], [["성격", "프로토타입 데모입니다. 공개 페이지에 회사명이 있어 주소는 싣지 않았습니다."]]);
   e("personal-pr-site", ["live", "src"], [["공개 저장소", "이 사이트의 소스 전체가 공개돼 있습니다. 이력은 익명 처리를 위해 새로 구성했습니다."]], [["GitHub 저장소", "https://github.com/tak21542154-ux/Personal_PR"]]);
+
+  /* 하위 항목: 전략사업실 제안서·투자 제안서 문서군 */
+  e("external-proposal-series", ["doc"], [PROPOSAL]);
+  e("corporate-ir-series", ["doc"], [PROPOSAL]);
+  e("ga-partnership-package", ["doc"], [PROPOSAL]);
+  e("accident-rental-partner-proposals", ["doc"], [PROPOSAL]);
+  e("cooperation-proposal-batch", ["doc"], [PROPOSAL]);
+  e("consignment-product-docs", ["doc"], [PROPOSAL]);
+  e("partner-proposal-builders", ["doc"], [PROPOSAL]);
 
   /* 하위 항목: 에이전트 정의 파일 16개 */
   ["captain-marvel-research", "captain-strategy", "coulson-compliance", "deadpool-community", "echo-voice", "hawkeye-diagnostics", "msmarvel-ui-designer", "nick-fury-orchestrator",

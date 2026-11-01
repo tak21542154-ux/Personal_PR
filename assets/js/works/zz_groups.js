@@ -27,7 +27,7 @@ window.SITE.groups = {
   "video-pipeline": ["promo-video-flow"],
   "design-assets": ["sns-content-templates", "algorithmic-poster", "ebook-macro"],
   "company-intro-ir": ["homepage-planning", "newsletter"],
-  "strategy-office-docs": ["new-business-tracks", "support-regulatory-reports", "doc-factory", "ir-decks", "ax-voucher-docs", "gov-application-docs", "brandkit-module"],
+  "strategy-office-docs": ["new-business-tracks", "support-regulatory-reports", "doc-factory", "ir-decks", "ax-voucher-docs", "gov-application-docs", "brandkit-module", "external-proposal-series", "corporate-ir-series", "ga-partnership-package", "accident-rental-partner-proposals", "cooperation-proposal-batch", "consignment-product-docs", "partner-proposal-builders"],
   "toktokstock": ["toktokstock-admin-manual", "group-brands", "gerion-research"],
   "sales-training": ["mass-training", "branch-manual", "center-model", "remote-ops"],
   "brand-launch-plans": ["chainmachine-plan", "hibuff-plan", "bluevisor-gtm"],
