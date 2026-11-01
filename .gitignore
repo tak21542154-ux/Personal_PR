@@ -8,3 +8,4 @@ tools/.private-terms.json
 .omp/
 _t_*.html
 tools/.evidence-redact.json
+tools/.cover-sources.json
