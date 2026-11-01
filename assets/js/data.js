@@ -11,18 +11,13 @@ window.SITE = {
   },
   contact: { email: "tak2154@naver.com", phone: "010-4694-5203", note: "" },
   categories: [
-    { id: "fintech",    no: "01", en: "FinTech Service",     ko: "핀테크 서비스",        desc: "시스템 트레이딩 서비스의 기획, 제품, 운영." },
-    { id: "ops",        no: "02", en: "Business Platform",   ko: "업무 운영 플랫폼",     desc: "현업의 반복 업무를 한 화면으로 모으는 B2B 시스템." },
-    { id: "growth",     no: "03", en: "Sales Automation",    ko: "영업·마케팅 자동화",   desc: "대상 발굴부터 발송, 캠페인까지 이어지는 영업 도구." },
-    { id: "commerce",   no: "04", en: "Commerce Automation", ko: "커머스 자동화",        desc: "소싱, 등록, 주문, 리포트로 이어지는 오픈마켓 운영." },
-    { id: "ai",         no: "05", en: "AI Service",          ko: "AI 서비스",            desc: "AI로 새로운 경험을 만드는 소비자 서비스." },
-    { id: "agents",     no: "06", en: "AI Agent Corps",      ko: "AI 에이전트 군단",     desc: "역할별로 정의해 둔 전담 AI 요원들." },
-    { id: "skills",     no: "07", en: "Skills & Workflow",   ko: "스킬·워크플로",        desc: "반복 작업을 한 번의 호출로 바꾸는 스킬과 작업 체계." },
-    { id: "automation", no: "08", en: "Ops Automation",      ko: "운영 자동화·봇",       desc: "정해진 시간에 돌며 점검하고 알리는 스케줄과 봇." },
-    { id: "data",       no: "09", en: "Data & Tools",        ko: "데이터·크롤러·도구",   desc: "수집, 변환, 점검을 맡는 작은 도구들." },
-    { id: "creative",   no: "10", en: "Landing & IR",        ko: "랜딩·IR·문서",         desc: "서비스를 설명하고 설득하는 페이지와 제안 문서." },
-    { id: "brand",      no: "11", en: "Brand & Business",    ko: "브랜드·사업 이력",     desc: "직접 세우고 운영해 온 브랜드와 사업." },
-    { id: "knowledge",  no: "12", en: "Knowledge & Infra",   ko: "지식·인프라",          desc: "기록이 쌓이고 일이 흩어지지 않게 하는 기반." }
+    { id: "fintech",   no: "01", en: "FinTech Service",       ko: "핀테크·투자 서비스",     desc: "시스템 트레이딩 서비스의 기획·제품·운영과 그 검증 체계." },
+    { id: "platform",  no: "02", en: "Business Platform",     ko: "모빌리티·업무 플랫폼",   desc: "현업의 반복 업무를 한 화면으로 모으는 B2B 시스템과 서비스 프로토타입." },
+    { id: "growth",    no: "03", en: "Sales & Commerce",      ko: "영업·마케팅·커머스",     desc: "대상 발굴, 교육, 콘텐츠, 채널 운영과 오픈마켓 자동화." },
+    { id: "ai",        no: "04", en: "AI Service & Agents",   ko: "AI 서비스·에이전트·스킬", desc: "AI 서비스와, 일을 나눠 맡는 에이전트·스킬·환경 구성." },
+    { id: "tools",     no: "05", en: "Automation & Tools",    ko: "자동화·운영 도구",       desc: "정해진 시간에 돌며 점검하고 알리는 봇과 작은 도구들." },
+    { id: "docs",      no: "06", en: "Proposals & Docs",      ko: "제안서·IR·기획 문서",    desc: "상대를 설득하는 제안 문서, 소개서, 기획안과 랜딩." },
+    { id: "knowledge", no: "07", en: "Knowledge & Ops Docs",  ko: "지식·운영 문서 체계",    desc: "기록이 쌓이고 일이 흩어지지 않게 하는 기반." }
   ],
   works: []
 };

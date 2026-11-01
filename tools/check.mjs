@@ -132,6 +132,21 @@ rootFiles.forEach((rf) => {
   }
 }
 
+// 소분류(kidGroups) 검증: 대표 항목의 하위 항목이 빠짐없이, 한 번씩만 들어가야 한다
+{
+  const G = S.groups || {};
+  Object.entries(S.kidGroups || {}).forEach(([p, gs]) => {
+    const want = new Set(G[p] || []), seen = new Map();
+    if (!G[p]) err(`소분류: 묶음에 없는 대표 항목 ${p}`);
+    gs.forEach(([label, list]) => list.forEach((id) => {
+      if (!want.has(id)) err(`소분류 ${p}/${label}: 하위 항목이 아닌 ${id}`);
+      if (seen.has(id)) err(`소분류 ${p}: ${id} 가 ${seen.get(id)} 와 ${label} 에 중복`);
+      seen.set(id, label);
+    }));
+    want.forEach((id) => { if (!seen.has(id)) err(`소분류 ${p}: ${id} 가 어느 소분류에도 없음`); });
+  });
+}
+
 // 카테고리마다 최소 1개
 S.categories.forEach((c) => { if (!S.works.some((w) => w.cat === c.id)) warn(`카테고리 ${c.id} 에 항목이 없음`); });
 

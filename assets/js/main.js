@@ -101,7 +101,8 @@
       return '<a class="svc__c" href="?cat=' + c.id + '#works" data-cat="' + c.id + '">' +
         '<span class="svc__no">' + c.no + '</span><span class="svc__en">' + esc(c.en) + '</span><strong class="svc__ko">' + esc(c.ko) + '</strong>' +
         '<span class="svc__d">' + esc(c.desc) + '</span><span class="svc__n">' + n + ' items</span></a>';
-    }).join("");
+    }).join("") + '<a class="svc__c svc__all" href="#works" data-cat="all"><span class="svc__no">All</span><span class="svc__en">All Works</span><strong class="svc__ko">전체 보기</strong>' +
+      '<span class="svc__d">분야 구분 없이 대표 항목을 한꺼번에 봅니다.</span><span class="svc__n">' + tops.length + ' items</span></a>';
     svc.addEventListener("click", function (e) {
       var a = e.target.closest(".svc__c"); if (!a) return;
       e.preventDefault(); setFilter(a.getAttribute("data-cat"));
@@ -179,18 +180,30 @@
       if (w.url && !links.some(function (l) { return l.href === w.url; })) links.unshift({ label: "Visit Site", href: w.url });
       var linksHtml = links.length ? '<div class="dh__links" aria-label="바로가기">' + links.map(function (l) { return '<a class="btn-s" href="' + esc(l.href) + '" target="_blank" rel="noopener">' + esc(l.label) + ' <b>↗</b></a>'; }).join("") + '</div>' : "";
 
-      /* 묶음의 하위 기능: 설명을 한 페이지에서 이어서 읽고, 필요하면 개별 페이지로 */
+      /* 묶음의 하위 기능: 설명을 한 페이지에서 이어서 읽고, 제목 옆 버튼으로 개별 페이지로 바로 간다.
+         10개 이상이면 kidGroups 의 소분류로 나눠 보여 준다 */
+      var kidRow = function (k, hidden) {
+        var kw = (whyOf(k)[0] || ""); if (kw.length > 120) kw = kw.slice(0, 118).replace(/\s+\S*$/, "") + "…";
+        var body = whyOf(k).concat(howOf(k)).map(function (p) { return '<p>' + esc(p) + '</p>'; }).join("") +
+          ((k.features && k.features.length) ? '<ul class="kid__ul">' + k.features.map(function (f) { return '<li>' + esc(f) + '</li>'; }).join("") + '</ul>' : "");
+        return '<details class="kid" data-reveal' + (hidden ? ' hidden data-more' : '') + '><summary><span class="kid__h"><strong>' + esc(k.name) + '</strong>' +
+          '<a class="kid__go" href="product.html?id=' + esc(k.id) + '" aria-label="' + esc(k.name) + ' 개별 페이지">개별 페이지 <b>↗</b></a></span>' +
+          '<span class="kid__l">' + esc(k.line) + '</span><span class="kid__w">' + esc(kw) + '</span>' +
+          ((k.features && k.features.length) ? '<span class="kid__f">' + k.features.slice(0, 3).map(function (f) { return '<em>' + esc(f) + '</em>'; }).join("") + '</span>' : '') + '</summary><div class="kid__b">' + body + '</div></details>';
+      };
       var kidsHtml = "";
       if (w.kids.length) {
-        kidsHtml = '<section class="sec"><div class="wrap"><h2 class="h2 h2--sm"><small>Included</small>구성 기능 <span class="kids__n">' + w.kids.length + '</span></h2><p class="sub">항목을 눌러 펼치면 왜 만들어졌고 어떻게 동작하는지를 이 페이지에서 이어서 읽을 수 있습니다.</p><div class="kids">' +
-          w.kids.map(function (k, ki) {
-            var kw = (whyOf(k)[0] || ""); if (kw.length > 120) kw = kw.slice(0, 118).replace(/\s+\S*$/, "") + "…";
-            var body = whyOf(k).concat(howOf(k)).map(function (p) { return '<p>' + esc(p) + '</p>'; }).join("") +
-              ((k.features && k.features.length) ? '<ul class="kid__ul">' + k.features.map(function (f) { return '<li>' + esc(f) + '</li>'; }).join("") + '</ul>' : "") +
-              '<a class="more more--s" href="product.html?id=' + esc(k.id) + '">개별 페이지 <b>+</b></a>';
-            return '<details class="kid" data-reveal' + (ki >= 10 ? ' hidden data-more' : '') + '><summary><strong>' + esc(k.name) + '</strong><span class="kid__l">' + esc(k.line) + '</span><span class="kid__w">' + esc(kw) + '</span>' +
-              ((k.features && k.features.length) ? '<span class="kid__f">' + k.features.slice(0, 3).map(function (f) { return '<em>' + esc(f) + '</em>'; }).join("") + '</span>' : '') + '</summary><div class="kid__b">' + body + '</div></details>';
-          }).join("") + '</div>' + (w.kids.length > 10 ? '<p class="kids__btn"><button type="button" class="more" id="kidsMore">나머지 ' + (w.kids.length - 10) + '개 펼치기 <b>+</b></button></p>' : '') + '</div></section>';
+        var KG = (S.kidGroups || {})[w.id];
+        var groups = KG ? KG.map(function (g) { return { label: g[0], kids: g[1].map(function (id) { return byId[id]; }).filter(Boolean) }; }).filter(function (g) { return g.kids.length; })
+          : [{ label: "", kids: w.kids }];
+        var lim = KG ? 8 : 10;
+        var fold = function (n) { return n > lim + 2; }; /* 한두 개 남기려고 접지는 않는다 */
+        kidsHtml = '<section class="sec"><div class="wrap"><h2 class="h2 h2--sm"><small>Included</small>구성 기능 <span class="kids__n">' + w.kids.length + '</span></h2><p class="sub">항목을 눌러 펼치면 왜 만들어졌고 어떻게 동작하는지를 이 페이지에서 이어서 읽을 수 있고, 제목 옆 버튼으로 개별 페이지로 바로 갑니다.</p>' +
+          groups.map(function (g) {
+            return '<div class="kgrp">' + (g.label ? '<h3 class="kgrp__t">' + esc(g.label) + ' <em>' + g.kids.length + '</em></h3>' : '') + '<div class="kids">' +
+              g.kids.map(function (k, ki) { return kidRow(k, fold(g.kids.length) && ki >= lim); }).join("") + '</div>' +
+              (fold(g.kids.length) ? '<p class="kids__btn"><button type="button" class="more kidsMore">나머지 ' + (g.kids.length - lim) + '개 펼치기 <b>+</b></button></p>' : '') + '</div>';
+          }).join("") + '</div></section>';
       }
 
       /* 타임라인: 대표 항목은 하위 기능의 첫 이정표를 함께 시간순으로 보여 준다 */
@@ -241,10 +254,11 @@
         '<a href="product.html?id=' + esc(prev.id) + '"><small>Prev</small><strong>' + esc(prev.name) + '</strong></a>' +
         (w.parent ? '<a href="product.html?id=' + esc(w.parent.id) + '" class="pn__all">' + esc(w.parent.name) + '</a>' : '<a href="index.html?cat=' + esc(c.id) + '#works" class="pn__all">All ' + esc(c.en) + '</a>') +
         '<a href="product.html?id=' + esc(next.id) + '" class="pn__n"><small>Next</small><strong>' + esc(next.name) + '</strong></a></div></section>';
-      var km = $("#kidsMore");
-      if (km) km.addEventListener("click", function () {
-        document.querySelectorAll(".kid[data-more]").forEach(function (d) { d.hidden = false; });
-        km.parentNode.remove();
+      document.querySelectorAll(".kidsMore").forEach(function (km) {
+        km.addEventListener("click", function () {
+          km.closest(".kgrp").querySelectorAll(".kid[data-more]").forEach(function (d) { d.hidden = false; });
+          km.parentNode.remove();
+        });
       });
       /* 세로로 긴 화면(폰 캡처)은 폭을 줄여 가운데에 둔다 */
       document.querySelectorAll(".shots__g img").forEach(function (im) {

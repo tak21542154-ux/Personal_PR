@@ -206,10 +206,11 @@ const frameOf = (w) => {
 const VAR = makeVariants({ R, Ln, Ci, Pl, bars, INK, MID, SOFT, LINE, ACC });
 const seen = {};
 const viOf = {};
-tops.forEach((w) => { seen[w.cat] = seen[w.cat] || 0; viOf[w.id] = seen[w.cat]++; });
+tops.forEach((w) => { const c = w.cat0 || w.cat; seen[c] = seen[c] || 0; viOf[w.id] = seen[c]++; });
 const motifFor = (w, r) => {
-  const base = MOTIF[w.cat] || MOTIF.knowledge;
-  const vs = (VAR[w.cat] || [null]).map((f) => f || base);
+  const c0 = w.cat0 || w.cat;
+  const base = MOTIF[c0] || MOTIF.knowledge;
+  const vs = (VAR[c0] || [null]).map((f) => f || base);
   return vs[(viOf[w.id] || 0) % vs.length](r);
 };
 
