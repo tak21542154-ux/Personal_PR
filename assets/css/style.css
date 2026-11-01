@@ -312,3 +312,27 @@ details.kid[open] .kid__w,details.kid[open] .kid__f{display:none}
 .shots__g li.is-wide figcaption{align-self:stretch}
 .shots__g a{display:block;cursor:zoom-in}
 .shots__g li.is-tall a,.shots__g li.is-wide a{display:flex;justify-content:center}
+
+/* 증빙 */
+.card__ev{font-size:11.5px;color:var(--accent);font-weight:500;margin-top:2px}
+.evd{display:grid;grid-template-columns:1fr 2fr;gap:40px}
+.evd__l .sub{margin-top:14px;color:var(--sub);font-size:14px;line-height:1.7}
+.evd__links{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.evd__list{display:grid;grid-template-columns:repeat(2,1fr);border-top:1px solid var(--ink)}
+.evd__list li{padding:24px 24px 24px 0;border-bottom:1px solid var(--line)}
+.evd__list b{font-family:var(--f-en);font-size:12px;color:var(--accent)}
+.evd__list h3{font-size:17px;margin:6px 0}
+.evd__list h3 em{font-style:normal;font-family:var(--f-en);font-size:12px;color:var(--sub);margin-left:6px}
+.evd__list p{font-size:13.5px;color:var(--sub);line-height:1.65}
+.ev__chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.ev__chip{display:inline-block;padding:6px 14px;border:1px solid var(--ink);font-size:13px;font-weight:500;background:#fff}
+.ev__chip--live,.ev__chip--src{background:var(--ink);color:#fff}
+.ev__note{font-size:14px;color:var(--sub);margin-bottom:14px}
+.ev__f{display:grid;gap:0;border-top:1px solid var(--ink);margin-bottom:18px}
+.ev__f>div{display:grid;grid-template-columns:200px 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--line)}
+.ev__f dt{font-size:13px;color:var(--sub)}
+.ev__f dd{font-size:14.5px;line-height:1.65;word-break:keep-all}
+.ev__d{display:grid;gap:6px;margin:0 0 6px;font-size:13px;color:var(--sub);line-height:1.6}
+.ev__d b{color:var(--ink);font-weight:500;margin-right:4px}
+.ev__links{margin-right:0;margin-top:18px}
+@media (max-width:860px){.evd{grid-template-columns:1fr}.evd__list{grid-template-columns:1fr}.ev__f>div{grid-template-columns:1fr;gap:4px}}

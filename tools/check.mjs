@@ -99,6 +99,39 @@ rootFiles.forEach((rf) => {
   console.log(`대표 항목 ${tops.length}개 / 하위 항목 ${kid.size}개`);
 }
 
+// 증빙 검증: id 존재, 종류 유효, 링크는 https, evidence 파일 링크는 실제 파일, 값에 비밀·사적 용어 없음
+{
+  const kinds = new Set((S.evidenceKinds || []).map((k) => k.k));
+  const base = "https://github.com/tak21542154-ux/Personal_PR/";
+  Object.entries(S.evidence || {}).forEach(([id, e]) => {
+    if (!ids.has(id)) err(`증빙: 없는 항목 ${id}`);
+    (e.g || []).forEach((k) => { if (!kinds.has(k)) err(`증빙 ${id}: 모르는 종류 ${k}`); });
+    if (!(e.g && e.g.length)) err(`증빙 ${id}: 종류가 비어 있음`);
+    (e.l || []).forEach(([name, href]) => {
+      if (!/^https:\/\//.test(href)) err(`증빙 ${id}: 링크는 https 만 (${href})`);
+      const m = href.startsWith(base) && href.match(/\/(?:blob|tree)\/main\/(evidence\/.*)$/);
+      if (m && !fs.existsSync(path.join(root, m[1]))) err(`증빙 ${id}: 파일 없음 ${m[1]}`);
+    });
+    const text = JSON.stringify(e);
+    BANNED.concat(PRIVATE).forEach(([re, msg]) => { if (re.test(text)) err(`증빙 ${id}: ${msg}`); });
+    PII.forEach(([re, msg]) => { if (re.test(text)) err(`증빙 ${id}: ${msg}`); });
+  });
+  // evidence 폴더 원문: 사적 용어·비밀값·허용 외 연락처가 없어야 한다(금지 표현 목록은 규칙 설명에 쓰이므로 제외)
+  const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((x) => (x.isDirectory() ? walk(path.join(d, x.name)) : [path.join(d, x.name)]));
+  const evDir = path.join(root, "evidence");
+  if (fs.existsSync(evDir)) {
+    const evFiles = walk(evDir);
+    evFiles.forEach((f) => {
+      const t = fs.readFileSync(f, "utf8"), rel = path.relative(root, f).replace(/\\/g, "/");
+      PRIVATE.forEach(([re, msg]) => { if (re.test(t)) err(`${rel}: ${msg}`); });
+      PII.forEach(([re, msg]) => { if (re.test(t)) err(`${rel}: ${msg}`); });
+      if (/(^|[^A-Za-z0-9])[A-Z]:[\\/][A-Za-z_.]|\/home\/|\/Users\//.test(t)) err(`${rel}: 로컬 경로`);
+      (t.match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g) || []).forEach((m) => { if (m.toLowerCase() !== allowedEmail) err(`${rel}: 허용되지 않은 이메일 ${m}`); });
+    });
+    console.log(`증빙 파일 ${evFiles.length}개 검사`);
+  }
+}
+
 // 카테고리마다 최소 1개
 S.categories.forEach((c) => { if (!S.works.some((w) => w.cat === c.id)) warn(`카테고리 ${c.id} 에 항목이 없음`); });
 

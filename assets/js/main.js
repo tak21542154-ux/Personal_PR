@@ -32,6 +32,23 @@
   });
   var tops = S.works.filter(function (w) { return !w.parent; });
 
+  /* 증빙: 항목에 붙이고, 화면 캡처가 있으면 '화면'을 자동으로 더한다. 하위 항목은 자기 증빙이 없으면 대표 항목의 것을 쓴다 */
+  var KINDS = S.evidenceKinds || [];
+  var kindOf = function (k) { return KINDS.filter(function (x) { return x.k === k; })[0]; };
+  var kindIdx = function (k) { return KINDS.map(function (x) { return x.k; }).indexOf(k); };
+  var evOf = function (w) {
+    var own = (S.evidence || {})[w.id], base = own || (w.parent && (S.evidence || {})[w.parent.id]) || null;
+    var g = base ? base.g.slice() : [];
+    if (w.shots && w.shots.length && g.indexOf("demo") < 0) g.push("demo");
+    if (!g.length) return null;
+    g.sort(function (a, b) { return kindIdx(a) - kindIdx(b); });
+    return { g: g, f: base ? base.f : [], l: own ? own.l : [], inherited: !own };
+  };
+  var evLine = function (w) {
+    var ev = evOf(w); if (!ev) return "";
+    return '<span class="card__ev">증빙 · ' + ev.g.map(function (k) { return esc((kindOf(k) || {}).t || k); }).join(" · ") + '</span>';
+  };
+
   /* 공통: 이름, 연도, 연락 버튼, 헤더, 모바일 메뉴 */
   document.querySelectorAll("[data-site]").forEach(function (el) { el.textContent = S[el.getAttribute("data-site")]; });
   var yr = $("#yr"); if (yr) yr.textContent = new Date().getFullYear();
@@ -65,7 +82,7 @@
     var c = catOf(w.cat);
     return '<a class="card" href="product.html?id=' + esc(w.id) + '"><div class="card__vis"><span class="card__tag">' + esc(c.en) + '</span><span class="card__st">' + esc(w.status) + '</span>' + vis(w, true) +
       (w.kids.length ? '<span class="card__k">기능 ' + w.kids.length + '</span>' : '') + '</div>' +
-      '<div class="card__b"><time>' + esc(w.period) + '</time><h3>' + esc(w.name) + '</h3><p>' + esc(w.line) + '</p><span class="more more--s">View More <b>+</b></span></div></a>';
+      '<div class="card__b"><time>' + esc(w.period) + '</time><h3>' + esc(w.name) + '</h3><p>' + esc(w.line) + '</p>' + evLine(w) + '<span class="more more--s">View More <b>+</b></span></div></a>';
   }
 
   /* ───── 메인 ───── */
@@ -127,6 +144,11 @@
       cnt.textContent = list.length + " items";
       more.hidden = shown >= list.length;
     }
+    var evk = $("#evKinds");
+    if (evk) evk.innerHTML = KINDS.map(function (kd, i) {
+      var n = tops.filter(function (w) { var e = evOf(w); return e && e.g.indexOf(kd.k) > -1; }).length;
+      return '<li><b>' + ("0" + (i + 1)).slice(-2) + '</b><h3>' + esc(kd.t) + ' <em>' + n + '</em></h3><p>' + esc(kd.d) + '</p></li>';
+    }).join("");
     draw();
     if (urlCat && location.hash === "#works") setTimeout(function () { $("#works").scrollIntoView(); }, 50);
     reveal();
@@ -182,6 +204,22 @@
         if (tl.length > 24) { var step = tl.length / 24; tl = Array.apply(null, Array(24)).map(function (_, i) { return tl[Math.floor(i * step)]; }); }
       }
 
+      /* 증빙 구역 */
+      var ev = evOf(w), evHtml = "";
+      if (ev) {
+        var mailto = S.contact && S.contact.email ? "mailto:" + S.contact.email + "?subject=" + encodeURIComponent("[" + w.name + "] 시연·열람 요청") : "";
+        var needReq = ev.g.indexOf("open") > -1 || ev.g.indexOf("doc") > -1;
+        /* 서비스 바로가기(공개 주소)도 증빙 칸에 함께 둔다 */
+        var evLinks = (w.links || []).map(function (l) { return [l.label, l.href]; }).concat(ev.l).filter(function (l, i, a) { return a.findIndex(function (x) { return x[1] === l[1]; }) === i; });
+        evHtml = sec("gray", "Evidence", "증빙",
+          '<ul class="ev__chips">' + ev.g.map(function (k) { return '<li class="ev__chip ev__chip--' + k + '">' + esc((kindOf(k) || {}).t || k) + '</li>'; }).join("") + '</ul>' +
+          (ev.inherited && w.parent ? '<p class="ev__note">대표 항목 「' + esc(w.parent.name) + '」와 같은 저장소·화면에서 확인할 수 있습니다.</p>' : "") +
+          (ev.f.length ? '<dl class="ev__f">' + ev.f.map(function (x) { return '<div><dt>' + esc(x[0]) + '</dt><dd>' + esc(x[1]) + '</dd></div>'; }).join("") + '</dl>' : "") +
+          '<ul class="ev__d">' + ev.g.map(function (k) { var kd = kindOf(k); return kd ? '<li><b>' + esc(kd.t) + '</b> ' + esc(kd.d) + '</li>' : ""; }).join("") + '</ul>' +
+          ((evLinks.length || (needReq && mailto)) ? '<div class="dh__links ev__links">' + evLinks.map(function (l) { return '<a class="btn-s" href="' + esc(l[1]) + '" target="_blank" rel="noopener">' + esc(l[0]) + ' <b>↗</b></a>'; }).join("") +
+            (needReq && mailto ? '<a class="btn-s" href="' + esc(mailto) + '">시연·열람 요청 <b>→</b></a>' : "") + '</div>' : ""));
+      }
+
       root.innerHTML =
         '<section class="dh"><div class="wrap dh__in">' +
         '<nav class="crumb" aria-label="경로"><a href="index.html">Home</a><span>/</span><a href="index.html?cat=' + esc(c.id) + '#works">' + esc(c.en) + '</a><span>/</span>' +
@@ -189,6 +227,7 @@
         '<h1 class="dh__t">' + esc(w.en) + '</h1><p class="dh__ko">' + esc(w.name) + '</p><p class="dh__line">' + esc(w.line) + '</p>' +
         '<dl class="meta">' + meta.map(function (m) { return '<div><dt>' + m[0] + '</dt><dd>' + esc(m[1]) + '</dd></div>'; }).join("") + '</dl>' + linksHtml +
         '<div class="dh__vis has-img">' + vis(w) + '</div></div></section>' +
+        evHtml +
         (why.length ? sec("", "Why", "왜 만들어졌나", paras(why)) : "") +
         (how.length || (w.parts && w.parts.length) ? sec("gray", "How", "어떻게 동작하나", paras(how) +
           (w.parts && w.parts.length ? '<dl class="parts">' + w.parts.map(function (p) { return '<div><dt>' + esc(p[0]) + '</dt><dd>' + esc(p[1]) + '</dd></div>'; }).join("") + '</dl>' : "")) : "") +
