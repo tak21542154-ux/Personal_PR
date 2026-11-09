@@ -3,7 +3,7 @@ window.SITE = {
   name: "유경탁",
   en: "YU KYUNGTAK",
   hero: ["ONE MAKER.", "A WHOLE AI TEAM."],
-  heroSub: "기획부터 운영까지, 1인 AI 팀으로 제품을 만드는 사업가",
+  heroSub: "기획부터 운영까지, 1인 AI 팀으로 제품을 만드는 빌더",
   intro: {
     title: "Overview",
     ko: "흩어져 있던 서비스와 프로그램, 자동화, 에이전트를 한곳에 모았습니다.",
