@@ -8,13 +8,11 @@ import io
 import json
 import os
 import re
-import sys
 
 from PIL import Image
 
 SITE = json.load(open("_s/site.json", encoding="utf-8"))
-PDF_MODE = "--pdf" in sys.argv  # PDF 인쇄용: 구성 기능은 접힌 채로 두지 않고 온라인판 안내 한 줄로 바꾼다
-OUT = "_s/single_pdf.html" if PDF_MODE else "dist/YU_KYUNGTAK_portfolio.html"
+OUT = "dist/YU_KYUNGTAK_portfolio.html"
 ONLINE = "https://tak21542154-ux.github.io/Personal_PR/"
 TODAY = datetime.date.today().isoformat()
 
@@ -108,8 +106,6 @@ def kids_html(w):
     inner = ""
     for label, ks in groups:
         inner += '<div class="kgrp">' + (f'<h5>{esc(label)} <em>{len(ks)}</em></h5>' if label else "") + "".join(kid_html(k) for k in ks) + "</div>"
-    if PDF_MODE:
-        return f'<p class="more">구성 기능 {len(ids)}개의 설명은 온라인판에서 볼 수 있습니다.</p>'
     return f'<details class="kids"><summary>구성 기능 {len(ids)}개 펼쳐 보기</summary>{inner}</details>'
 
 
@@ -223,14 +219,13 @@ details.kid>summary{cursor:pointer;list-style:none;padding:11px 26px 11px 0;posi
 details.kid>summary::-webkit-details-marker{display:none}details.kid>summary::after{content:"+";position:absolute;right:4px;top:10px;color:var(--sub)}details.kid[open]>summary::after{content:"–";color:var(--accent)}
 details.kid b{font-size:14.5px}details.kid summary span{font-size:12.5px;color:var(--sub)}
 .kb{padding:2px 0 16px}.kb p{font-size:13.5px;margin:0 0 9px}.kb .feat{font-size:13px}
-p.more{margin:26px 0 0;padding-top:12px;border-top:1px solid var(--ink);font-size:13px;color:var(--sub)}
 footer{margin-top:80px;padding:40px 0 70px;border-top:1px solid var(--ink);font-size:13px;color:var(--sub)}
 footer b{color:var(--ink)}
 @media (max-width:860px){.wrap{padding:0 20px}nav.gnb .wrap{padding:12px 20px}.stats{grid-template-columns:repeat(2,1fr)}.intro,.how{grid-template-columns:1fr;gap:18px}.how ul{grid-template-columns:1fr}.toc ol{grid-template-columns:1fr}.item{grid-template-columns:1fr;gap:20px}.item .ph{position:static}.meta{grid-template-columns:repeat(2,1fr)}.facts div,.parts div{grid-template-columns:1fr;gap:2px}.tl li{grid-template-columns:80px 1fr}.tl span{grid-column:2}}
 @media print{@page{margin:14mm}nav.gnb{display:none}header.top{padding-top:0}.cat{page-break-before:always}.item{break-inside:avoid-page}.item .ph{position:static}a{text-decoration:none}}
 """
 
-PRINT_JS = "" if PDF_MODE else "<script>window.addEventListener('beforeprint',function(){document.querySelectorAll('details').forEach(function(d){d.open=true})});</script>"
+PRINT_JS = "<script>window.addEventListener('beforeprint',function(){document.querySelectorAll('details').forEach(function(d){d.open=true})});</script>"
 
 doc = f"""<!doctype html>
 <html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
